@@ -15,6 +15,7 @@ import { useFormik } from "formik";
 import { auth } from "../../firebase";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { getDatabase, ref, set, onValue, push } from "firebase/database";
+import ManagersRow from "./ManagersRow";
 
 const validationSchema = yup.object({
   email: yup
@@ -29,7 +30,7 @@ const validationSchema = yup.object({
 });
 
 export default function Managers() {
-  const [managers, setManagers] = useState([]);
+  const [managers, setManagers] = useState(null);
 
   console.log("yeh rahay", managers);
 
@@ -77,6 +78,9 @@ export default function Managers() {
   useEffect(() => {
     const db = getDatabase();
     const dbRef = ref(db, "users/");
+
+    let arr = [];
+
     onValue(
       dbRef,
       (snapshot) => {
@@ -84,11 +88,13 @@ export default function Managers() {
           const childKey = childSnapshot.key;
           const childData = childSnapshot.val();
 
+          arr.unshift(childData);
           console.log(childData);
-          managers.push(childData);
-          setManagers([childData]);
         });
+
+        setManagers([...arr]);
       },
+
       {
         onlyOnce: true,
       }
@@ -99,7 +105,8 @@ export default function Managers() {
     <>
       <MyNav />
       <Container>
-        <Nav className="justify-content-end bg-dark mt-5" activeKey="/home">
+        <h3 className="mt-5">Managers</h3>
+        <Nav className="justify-content-end bg-dark mt-3" activeKey="/home">
           <Nav.Item className="py-3">
             <Form onSubmit={formik.handleSubmit}>
               <Row>
@@ -152,23 +159,7 @@ export default function Managers() {
               <th>Password</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td>1</td>
-              <td>Mark@gmail.com</td>
-              <td>Otto</td>
-            </tr>
-            <tr>
-              <td>1</td>
-              <td>Mark@gmail.com</td>
-              <td>Otto</td>
-            </tr>
-            <tr>
-              <td>1</td>
-              <td>Mark@gmail.com</td>
-              <td>Otto</td>
-            </tr>
-          </tbody>
+          <tbody>{managers && <ManagersRow managers={managers} />}</tbody>
         </Table>
       </Container>
     </>

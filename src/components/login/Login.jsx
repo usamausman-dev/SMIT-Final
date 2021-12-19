@@ -43,7 +43,7 @@ export default function LogIn() {
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
-          console.log(errorMessage);
+          alert(errorMessage);
         });
     },
   });
@@ -108,6 +108,8 @@ export default function LogIn() {
 
               {/* <Link to="/signup">Don't Have an Account? SignUp</Link>
               <Link to="/forget_password">Forget Password</Link> */}
+
+              <small>Email : admin@saylani.com || password : 12345678 </small>
             </Stack>
           </form>
         </Paper>
